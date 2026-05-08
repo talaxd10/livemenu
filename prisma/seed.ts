@@ -11,16 +11,14 @@ const prisma = new PrismaClient({ adapter } as any);
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Clean up existing data
-  await prisma.qrCode.deleteMany();
-  await prisma.openingHour.deleteMany();
-  await prisma.offer.deleteMany();
-  await prisma.menuItem.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.session.deleteMany();
-  await prisma.account.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.restaurant.deleteMany();
+  // Idempotent: skip if already seeded to protect existing production data
+  const existing = await prisma.restaurant.findUnique({
+    where: { slug: "dilan-cafe" },
+  });
+  if (existing) {
+    console.log("⏭️  Seed data already exists (restaurant 'dilan-cafe' found). Skipping.");
+    return;
+  }
 
   // Create Dilan Café restaurant
   const restaurant = await prisma.restaurant.create({
