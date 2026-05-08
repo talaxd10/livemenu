@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-sora);
+  --font-display: var(--font-playfair);
+  --font-mono: var(--font-dm-mono);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* ── Lawha design system ─────────────────────────── */
+  --lawha-cream:       #F8F4EF;
+  --lawha-ink:         #1A120A;
+  --lawha-ink-2:       #6B5A4E;
+  --lawha-ink-3:       #B09A8E;
+  --lawha-brand:       #E8622A;
+  --lawha-brand-d:     #C94E1A;
+  --lawha-brand-pale:  #FEF0E8;
+  --lawha-green:       #1A9B6C;
+  --lawha-green-pale:  #E6F7F1;
+  --lawha-gold:        #C9922A;
+  --lawha-gold-pale:   #FBF4E5;
+  --lawha-red:         #D63031;
+  --lawha-red-pale:    #FDEDED;
+  --lawha-border:      #EDE5DC;
+  --lawha-border-2:    #F3EDE7;
+  --lawha-admin-bg:    #F5F2EE;
+
+  /* ── Tailwind design tokens (HSL) ────────────────── */
+  /* cream  #F8F4EF */
+  --background: 38 40% 95%;
+  /* ink    #1A120A */
+  --foreground: 25 44% 7%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 25 44% 7%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 25 44% 7%;
+
+  --primary: 25 44% 7%;
+  --primary-foreground: 38 40% 95%;
+
+  /* brand-pale #FEF0E8 */
+  --secondary: 22 86% 95%;
+  --secondary-foreground: 18 77% 48%;
+
+  /* admin-bg #F5F2EE */
+  --muted: 36 21% 94%;
+  /* ink-2 #6B5A4E */
+  --muted-foreground: 24 16% 36%;
+
+  /* brand orange #E8622A */
+  --accent: 18 77% 53%;
+  --accent-foreground: 0 0% 100%;
+
+  /* red #D63031 */
+  --destructive: 359 65% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* border #EDE5DC */
+  --border: 32 26% 90%;
+  --input: 32 26% 90%;
+  --ring: 18 77% 53%;
+
+  --sidebar: 25 44% 7%;
+  --sidebar-foreground: 38 40% 92%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sora, var(--font-sans)), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 2px;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Utility: hide scrollbar */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Blink animation for open-status dot */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+.animate-blink {
+  animation: blink 2s ease-in-out infinite;
+}
+
