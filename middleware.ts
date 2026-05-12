@@ -5,6 +5,11 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Only protect /admin and /super-admin routes
+  if (!pathname.startsWith("/admin") && !pathname.startsWith("/super-admin")) {
+    return NextResponse.next();
+  }
+
   const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET,
@@ -12,15 +17,6 @@ export async function middleware(req: NextRequest) {
 
   const isLoggedIn = !!token;
   const role = token?.role as string | undefined;
-
-  if (
-    pathname.startsWith("/admin") &&
-    !pathname.startsWith("/admin/api")
-  ) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
 
   if (pathname.startsWith("/super-admin")) {
     if (!isLoggedIn) {
@@ -31,16 +27,17 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (pathname === "/login" && isLoggedIn) {
-    if (role === "SUPER_ADMIN") {
-      return NextResponse.redirect(new URL("/super-admin", req.url));
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/api")) {
+    if (!isLoggedIn) {
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
     }
-    return NextResponse.redirect(new URL("/admin", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)"],
+  matcher: ["/admin/:path*", "/super-admin/:path*"],
 };
