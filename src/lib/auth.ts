@@ -19,12 +19,17 @@ export const authConfig: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        console.log("[auth] authorize() called", { email: credentials?.email });
+        if (!credentials?.email || !credentials?.password) {
+          console.log("[auth] authorize: missing credentials");
+          return null;
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
         });
 
+        console.log("[auth] authorize: user found?", !!user, "has hash?", !!user?.passwordHash);
         if (!user?.passwordHash) return null;
 
         const isValid = await bcrypt.compare(
@@ -32,8 +37,10 @@ export const authConfig: NextAuthConfig = {
           user.passwordHash
         );
 
+        console.log("[auth] authorize: password valid?", isValid);
         if (!isValid) return null;
 
+        console.log("[auth] authorize: success for", user.email, "role:", user.role);
         return {
           id: user.id,
           email: user.email,
@@ -50,6 +57,7 @@ export const authConfig: NextAuthConfig = {
         const u = user as ExtendedUser;
         token.role = u.role;
         token.restaurantId = u.restaurantId;
+        console.log("[auth] jwt callback: user signed in, role:", u.role);
       }
       return token;
     },
@@ -59,6 +67,7 @@ export const authConfig: NextAuthConfig = {
         session.user.role = token.role as string;
         session.user.restaurantId =
           (token.restaurantId as string | null) ?? null;
+        console.log("[auth] session callback: token.sub", token.sub, "role:", token.role);
       }
       return session;
     },

@@ -10,10 +10,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Auth.js v5 uses "authjs.session-token" (dev) or "__Secure-authjs.session-token" (prod)
+  // getToken from next-auth/jwt defaults to the v4 name, so we must specify it explicitly.
+  const isProduction = process.env.NODE_ENV === "production";
+  const cookieName = isProduction
+    ? "__Secure-authjs.session-token"
+    : "authjs.session-token";
+
   const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET,
+    cookieName,
+    secureCookie: isProduction,
   });
+
+  console.log("[middleware]", { pathname, cookieName, hasToken: !!token, env: process.env.NODE_ENV });
 
   const isLoggedIn = !!token;
   const role = token?.role as string | undefined;
