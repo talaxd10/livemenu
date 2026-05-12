@@ -3,6 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 // Lightweight config — no Prisma, no bcrypt, safe for Edge/middleware.
 // Providers are intentionally empty here; they live in auth.ts (Node.js runtime only).
 export const authConfig = {
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
