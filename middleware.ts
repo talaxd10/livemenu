@@ -1,21 +1,28 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-  const role = req.auth?.user?.role;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+  });
+
+  const isLoggedIn = !!token;
+  const role = token?.role as string | undefined;
 
   if (
-    nextUrl.pathname.startsWith("/admin") &&
-    !nextUrl.pathname.startsWith("/admin/api")
+    pathname.startsWith("/admin") &&
+    !pathname.startsWith("/admin/api")
   ) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  if (nextUrl.pathname.startsWith("/super-admin")) {
+  if (pathname.startsWith("/super-admin")) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -24,7 +31,7 @@ export default auth((req) => {
     }
   }
 
-  if (nextUrl.pathname === "/login" && isLoggedIn) {
+  if (pathname === "/login" && isLoggedIn) {
     if (role === "SUPER_ADMIN") {
       return NextResponse.redirect(new URL("/super-admin", req.url));
     }
@@ -32,7 +39,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)"],
