@@ -1,9 +1,8 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+// Route protection is handled server-side in each layout via auth() from @/lib/auth.
+// Middleware is intentionally kept as a no-op to avoid Auth.js v5/Edge runtime issues.
 
-// Use the lightweight auth config (no Prisma/bcrypt) to stay within Edge size limits.
-export const { auth: middleware } = NextAuth(authConfig);
+export function middleware() {}
 
 export const config = {
-  matcher: ["/admin/:path*", "/super-admin/:path*"],
+  matcher: [],
 };
